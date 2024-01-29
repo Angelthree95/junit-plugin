@@ -96,16 +96,24 @@ Each test method and class can have its properties specified with `@TcmsAttribut
         public void testThree() {
             assertThat(...);
         }
+
+        @Test
+        @TcmsAttributes(productId=11, testCaseId=12, planId=4, disabled=true)
+        public void testFour() {
+            assertThat(...);
+        }
     }
 
 In this example all tests would have been assigned to a test run with product ID = 10, except testThree
 which would be assigned to product ID = 11.
 Each of the tests would be assigned to an existing testCase ID (testOne - 11, testTwo - 10, testThree - 12).
+testFour would not be reported to Kiwi.
 All values specified in the test (method) annotation will override class level annotation attributes.
 Attributes which you can specify are:
 - `testCaseId` (it can be also put as annotation value, without the name, same as testTwo annotation in usage example)
 - `productId`
 - `planId`
+- `disabled` (boolean `true`/`false`. `false` by default. Disables reporting test(s) to Kiwi TCMS. Test will run normally)
 
 Warning: Mismatching attributes with real values in KiwiTCMS can lead to not reported or misreported test executions/runs.
 Make sure to double check the data you input into the attributes.
