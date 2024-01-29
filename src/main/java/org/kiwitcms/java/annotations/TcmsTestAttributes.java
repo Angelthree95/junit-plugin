@@ -10,4 +10,5 @@ public @interface TcmsTestAttributes
 	int testCaseId() default 0;
 	int productId() default 0;
 	int planId() default 0;
+	boolean disabled() default false;
 }

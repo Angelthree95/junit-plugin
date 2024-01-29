@@ -37,37 +37,41 @@ public class KiwiTcmsExtension extends SummaryGeneratingListener implements Afte
     public void afterEach(ExtensionContext context) {
         if (context.getTestMethod().isPresent()) {
             Method method = context.getTestMethod().get();
-            TestMethod test = new TestMethod();
-            test.name = method.getName();
-            if (context.getExecutionException().isPresent()) {
-                test.exception = context.getExecutionException().get();
-                test.result = "FAIL";
-            }
-            else {
-                test.result = "PASS";
-            }
-            test.containingClass = method.getDeclaringClass().getSimpleName();
-
+    
             //Assign test attributes if present in annotations
             TcmsTestAttributesAnnotationProcessor classAnnotation = new TcmsTestAttributesAnnotationProcessor(method.getDeclaringClass());
             TcmsTestAttributesAnnotationProcessor methodAnnotation = new TcmsTestAttributesAnnotationProcessor(method);
-            //Test ID
-            test.id = classAnnotation.getTestCaseId() != 0 ? classAnnotation.getTestCaseId() : methodAnnotation.getTestCaseId();
-            if (classAnnotation.getTestCaseId() != 0 && methodAnnotation.getTestCaseId() != 0 && classAnnotation.getTestCaseId() != methodAnnotation.getTestCaseId()) {
-                test.id = methodAnnotation.getTestCaseId();
+            
+            if (!(classAnnotation.isDisabled() || methodAnnotation.isDisabled())) {
+                TestMethod test = new TestMethod();
+                test.name = method.getName();
+                if (context.getExecutionException().isPresent()) {
+                    test.exception = context.getExecutionException().get();
+                    test.result = "FAIL";
+                }
+                else {
+                    test.result = "PASS";
+                }
+                test.containingClass = method.getDeclaringClass().getSimpleName();
+                
+                //Test ID
+                test.id = classAnnotation.getTestCaseId() != 0 ? classAnnotation.getTestCaseId() : methodAnnotation.getTestCaseId();
+                if (classAnnotation.getTestCaseId() != 0 && methodAnnotation.getTestCaseId() != 0 && classAnnotation.getTestCaseId() != methodAnnotation.getTestCaseId()) {
+                    test.id = methodAnnotation.getTestCaseId();
+                }
+                //Product ID
+                test.productId = classAnnotation.getProductId() != 0 ? classAnnotation.getProductId() : methodAnnotation.getProductId();
+                if (classAnnotation.getProductId() != 0 && methodAnnotation.getProductId() != 0 && classAnnotation.getProductId() != methodAnnotation.getProductId()) {
+                    test.productId = methodAnnotation.getProductId();
+                }
+                //Plan ID
+                test.testPlanId = classAnnotation.getPlanId() != 0 ? classAnnotation.getPlanId() : methodAnnotation.getPlanId();
+                if (classAnnotation.getPlanId() != 0 && methodAnnotation.getPlanId() != 0 && classAnnotation.getPlanId() != methodAnnotation.getPlanId()) {
+                    test.testPlanId = methodAnnotation.getPlanId();
+                }
+                
+                tests.add(test);
             }
-            //Product ID
-            test.productId = classAnnotation.getProductId() != 0 ? classAnnotation.getProductId() : methodAnnotation.getProductId();
-            if (classAnnotation.getProductId() != 0 && methodAnnotation.getProductId() != 0 && classAnnotation.getProductId() != methodAnnotation.getProductId()) {
-                test.productId = methodAnnotation.getProductId();
-            }
-            //Plan ID
-            test.testPlanId = classAnnotation.getPlanId() != 0 ? classAnnotation.getPlanId() : methodAnnotation.getPlanId();
-            if (classAnnotation.getPlanId() != 0 && methodAnnotation.getPlanId() != 0 && classAnnotation.getPlanId() != methodAnnotation.getPlanId()) {
-                test.testPlanId = methodAnnotation.getPlanId();
-            }
-
-            tests.add(test);
         }
     }
 }

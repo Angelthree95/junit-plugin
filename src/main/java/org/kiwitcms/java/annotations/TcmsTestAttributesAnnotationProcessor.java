@@ -8,6 +8,7 @@ public class TcmsTestAttributesAnnotationProcessor {
 	private int testCaseId = 0;
 	private int productId = 0;
 	private int planId = 0;
+	private boolean disabled = false;
 
 	public TcmsTestAttributesAnnotationProcessor(Class<?> annotatedClass) {
 		if (annotatedClass.isAnnotationPresent(TcmsTestAttributes.class)) {
@@ -16,6 +17,7 @@ public class TcmsTestAttributesAnnotationProcessor {
 			this.testCaseId = classAttributes.testCaseId();
 			this.productId = classAttributes.productId();
 			this.planId = classAttributes.planId();
+			this.disabled = classAttributes.disabled();
 		}
 	}
 
@@ -26,6 +28,7 @@ public class TcmsTestAttributesAnnotationProcessor {
 			this.testCaseId = methodAttributes.testCaseId();
 			this.productId = methodAttributes.productId();
 			this.planId = methodAttributes.planId();
+			this.disabled = methodAttributes.disabled();
 		}
 	}
 
@@ -40,5 +43,10 @@ public class TcmsTestAttributesAnnotationProcessor {
 
 	public int getPlanId() {
 		return Math.max(this.planId, 0);
+	}
+	
+	public boolean isDisabled()
+	{
+		return disabled;
 	}
 }
